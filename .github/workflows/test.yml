@@ -1,45 +1,43 @@
 name: Integration Tests
- 
+
 env:
   host: ${{ secrets.host }}
   databaseUser: ${{ secrets.databaseUser }}
   databasePassword: ${{ secrets.databasePassword }}
   databasePort: ${{ secrets.databasePort }}
   databaseName: ${{ secrets.databaseName }}
- 
+
 on:
   pull_request:
     branches:
       - main
-  
+
   push:
     branches:
       - kusu
- 
+
 jobs:
   integration-test:
     runs-on: ubuntu-latest
- 
-    steps:
-      - name : Install MySQL
-        run: |
-          sudo apt-get update
-          sudo systemctl start mysql.service
-          sudo mysql --user=${{ secrets.databaseUser }} --password=${{ secrets.databasePassword }} -e "CREATE DATABASE IF NOT EXISTS ${{secrets.databaseName}};"
-          sudo mysql --user=root --password='gali1999' -e "FLUSH PRIVILEGES;"
 
- 
+    steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
- 
+
+      - name: Install MySQL and Create Database
+        env:
+          MYSQL_PWD: ${{ secrets.databasePassword }}
+        run: |
+          sudo apt-get update
+          mysql --user=${{ secrets.databaseUser }} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.databaseName }};"
+
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: "20.x"
- 
+
       - name: Install Dependencies
         run: npm install
- 
+
       - name: Run Tests
         run: npm test
- 

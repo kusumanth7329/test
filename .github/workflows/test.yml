@@ -25,7 +25,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo systemctl start mysql.service
-          sudo mysql --user=${{ secrets.DATABASEUSERNAME }} --password=${{ secrets.DATABASEPASSWORD }} -e "CREATE DATABASE IF NOT EXISTS ${};"
+          sudo mysql --user=${{ secrets.DATABASEUSERNAME }} --password=${{ secrets.DATABASEPASSWORD }} -e "CREATE DATABASE IF NOT EXISTS ${DATABASENAME};"
  
       - name: Checkout Repository
         uses: actions/checkout@v2

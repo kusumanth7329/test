@@ -23,7 +23,7 @@ jobs:
     steps:
       - name : Install MySQL
         run: |
-         mysql -h 127.0.0.1 -u root -e "CREATE DATABASE IF NOT EXISTS ${ databaseName};"
+         mysql -h 127.0.0.1 -u root -e "CREATE DATABASE IF NOT EXISTS ${{databaseName}};"
           sudo apt-get update
           sudo systemctl start mysql.service
           sudo mysql --user=${{ secrets.databaseUser }} --password=${{ secrets.databasePassword }} -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME};"

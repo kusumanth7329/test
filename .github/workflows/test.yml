@@ -26,11 +26,11 @@ jobs:
 
       - name: Configure MySQL Database
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.databasePassword }}  # Assuming you're using the root user
+          MYSQL_ROOT_PASSWORD: ${{ secrets.KUSUTRY.databasePassword }}  # Assuming you're using the root user
         run: |
-          sudo mysql -e "CREATE USER IF NOT EXISTS '${{ secrets.databaseUser }}'@'localhost' IDENTIFIED BY '${{ secrets.databasePassword }}';"
-          sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO '${{ secrets.databaseUser }}'@'localhost';"
-          sudo mysql --user=${{ secrets.databaseUser }} --password=${{ secrets.databasePassword }} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.databaseName }};"
+          sudo mysql -e "CREATE USER IF NOT EXISTS '${{secrets.KUSUTRY.databaseUser }}'@'localhost' IDENTIFIED BY '${{ secrets.KUSUTRY.databasePassword }}';"
+          sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO '${{ secrets.KUSUTRY.databaseUser }}'@'localhost';"
+          sudo mysql --user=${{ secrets.KUSUTRY.databaseUser }} --password=${{ secrets.KUSUTRY.databasePassword }} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.KUSUTRY.databaseName }};"
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -44,7 +44,7 @@ jobs:
         run: npm test
         env:
           DATABASE_HOST: 127.0.0.1
-          DATABASE_USER: ${{ secrets.databaseUser }}
-          DATABASE_PASSWORD: ${{ secrets.databasePassword }}
-          DATABASE_NAME: ${{ secrets.databaseName }}
+          DATABASE_USER: ${{ secrets.KUSUTRY.databaseUser }}
+          DATABASE_PASSWORD: ${{ secrets.KUSUTRY.databasePassword }}
+          DATABASE_NAME: ${{ secrets.KUSUTRY.databaseName }}
           DATABASE_PORT: 3306  # Default MySQL port

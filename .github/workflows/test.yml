@@ -1,0 +1,42 @@
+name: Integration Tests
+ 
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+ 
+jobs:
+  integration-tests:
+    runs-on: self-hosted
+ 
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL.DATABASE_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL.DATABASE }}
+          MYSQL_USER: ${{ secrets.MYSQL.DATABASE_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL.DATABASE_PASSWORD }}
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+ 
+    steps:
+      - name: Set MySQL root password
+        run: |
+          sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${{ secrets.MYSQL.DATABASE_PASSWORD }}';"
+ 
+      - name: Checkout repository
+        uses: actions/checkout@v2
+ 
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.x'
+ 
+      - name: Install dependencies
+        run: npm install
+ 
+      - name: Run integration tests
+        run: npm test

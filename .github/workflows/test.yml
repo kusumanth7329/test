@@ -19,9 +19,9 @@ jobs:
           sudo apt-get update
           if ! mysql --version; then
             sudo apt-get install mysql-server -y
-            sudo service mysql start
+            systemctl start mysqld
           else
-            sudo service mysql status || sudo service mysql start
+            sudo service mysql status || sudo systemctl start mysqld
           fi
 
       - name: Configure MySQL Database

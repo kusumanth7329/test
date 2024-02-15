@@ -14,7 +14,7 @@ on:
   
   push:
     branches:
-      - A3
+      - kusu
  
 jobs:
   integration-test:

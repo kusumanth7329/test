@@ -1,11 +1,11 @@
 name: Integration Tests
 
 env:
-  HOST: ${{ secrets.HOST }}
-  USERNAME: ${{ secrets.USERNAME }}
-  PASSWORD: ${{ secrets.PASSWORD }}
-  PORT: ${{ secrets.PORT }}
-  DATABASE: ${{ secrets.DATABASE }}
+  host: ${{ secrets.HOST }}
+  databaseUser: ${{ secrets.USERNAME }}
+  databasePassword: ${{ secrets.PASSWORD }}
+  databasePort: ${{ secrets.PORT }}
+  databaseName: ${{ secrets.DATABASE }}
 
 on:
   pull_request:
@@ -40,9 +40,4 @@ jobs:
 
       - name: Run Tests
         run: npm test
-        env:
-          HOST: ${{ secrets.HOST }}
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-          PORT: ${{ secrets.PORT }}
-          DATABASE: ${{ secrets.DATABASE }}
+  

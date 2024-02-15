@@ -28,6 +28,7 @@ jobs:
         env:
           MYSQL_PWD: ${{ secrets.databasePassword }}
         run: |
+          sudo service mysql status || sudo service mysql start
           sudo apt-get update
           mysql --user=${{ secrets.databaseUser }} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.databaseName }};"
 

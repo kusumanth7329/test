@@ -1,20 +1,10 @@
 name: Integration Tests
 
-env:
-  host: ${{ secrets.host }}
-  databaseUser: ${{ secrets.databaseUser }}
-  databasePassword: ${{ secrets.databasePassword }}
-  databasePort: ${{ secrets.databasePort }}
-  databaseName: ${{ secrets.databaseName }}
-
 on:
   pull_request:
-    branches:
-      - main
-
+    branches: [main]
   push:
-    branches:
-      - kusu
+    branches: [kusu]
 
 jobs:
   integration-test:
@@ -24,21 +14,37 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Install MySQL and Create Database
-        env:
-          MYSQL_PWD: ${{ secrets.databasePassword }}
+      - name: Install MySQL (if necessary)
         run: |
-          sudo service mysql status || sudo service mysql start
           sudo apt-get update
-          mysql --user=${{ secrets.databaseUser }} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.databaseName }};"
+          if ! mysql --version; then
+            sudo apt-get install mysql-server -y
+            sudo service mysql start
+          else
+            sudo service mysql status || sudo service mysql start
+          fi
+
+      - name: Configure MySQL Database
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.databasePassword }}  # Assuming you're using the root user
+        run: |
+          sudo mysql -e "CREATE USER IF NOT EXISTS '${{ secrets.databaseUser }}'@'localhost' IDENTIFIED BY '${{ secrets.databasePassword }}';"
+          sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO '${{ secrets.databaseUser }}'@'localhost';"
+          sudo mysql --user=${{ secrets.databaseUser }} --password=${{ secrets.databasePassword }} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.databaseName }};"
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "20.x"
+          node-version: '20.x'  # Adjust the Node.js version as needed
 
       - name: Install Dependencies
         run: npm install
 
       - name: Run Tests
         run: npm test
+        env:
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_USER: ${{ secrets.databaseUser }}
+          DATABASE_PASSWORD: ${{ secrets.databasePassword }}
+          DATABASE_NAME: ${{ secrets.databaseName }}
+          DATABASE_PORT: 3306  # Default MySQL port

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "test": "mocha --exit"
+    "test": "mocha Tests/*.js --exit "
   },
   "keywords": [],
   "author": "",

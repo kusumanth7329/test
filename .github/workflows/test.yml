@@ -1,11 +1,11 @@
 name: Integration Tests
  
 env:
-  DB_HOST: ${{ secrets.HOST }}
-  DB_USER: ${{ secrets.DATABASEUSERNAME}}
-  DB_PASS: ${{ secrets.DATABASEPASSWORD}}
-  DB_PORT: ${{ secrets.PORT }}
-  DB_NAME: ${{ secrets.DATABASE }}
+  HOST: ${{ secrets.HOST }}
+  DATABASEUSERNAME: ${{ secrets.DATABASEUSERNAME}}
+  DATABASEPASSWORD: ${{ secrets.DATABASEPASSWORD}}
+  PORT: ${{ secrets.PORT }}
+  DATABASENAME: ${{ secrets.DATABASE }}
  
 on:
   pull_request:
@@ -25,7 +25,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo systemctl start mysql.service
-          sudo mysql --user=${{ secrets.DATABASEUSERNAME }} --password=${{ secrets.DATABASEPASSWORD }} -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME};"
+          sudo mysql --user=${{ secrets.DATABASEUSERNAME }} --password=${{ secrets.DATABASEPASSWORD }} -e "CREATE DATABASE IF NOT EXISTS ${};"
  
       - name: Checkout Repository
         uses: actions/checkout@v2

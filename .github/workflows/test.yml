@@ -19,16 +19,18 @@ jobs:
           sudo apt-get update
           if ! mysql --version; then
             sudo apt-get install mysql-server -y
-            systemctl start mysqld
+            sudo service mysql start
+
           else
-            sudo service mysql status || sudo systemctl start mysqld
+            sudo service mysql status || sudo service mysql start
+
           fi
 
       - name: Configure MySQL Database
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.KUSUTRY.databasePassword }}  # Assuming you're using the root user
         run: |
-              sudo mysql --user=root --password=${{secrets.KUSUTRY.databasePassword }} -e "CREATE USER IF NOT EXISTS '${{ secrets.KUSUTRY.databaseUser }}'@'localhost' IDENTIFIED BY '${{ secrets.DATABASE_PASSWORD }}';"
+              sudo mysql --user=root --password=${{secrets.KUSUTRY.databasePassword }} -e "CREATE USER IF NOT EXISTS '${{ secrets.KUSUTRY.databaseUser }}'@'localhost' IDENTIFIED BY '${{ secrets.KUSUTRY.databasePassword }}';"
               sudo mysql --user=root --password=${{secrets.KUSUTRY.databasePassword }} -e "GRANT ALL PRIVILEGES ON *.* TO '${{ secrets.KUSUTRY.databaseUser }}'@'localhost' WITH GRANT OPTION;"
               sudo mysql --user=root --password=${{secrets.KUSUTRY.databasePassword }}-e "FLUSH PRIVILEGES;"
               sudo mysql --user=root --password=${{secrets.KUSUTRY.databasePassword }} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.KUSUTRY.databaseName }};"
